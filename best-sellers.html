@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Best Sellers - ShopVerse</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        
+        .best-sellers-page {
+            padding: 2rem 0;
+            min-height: 80vh;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+        }
+        
+        .hero-banner {
+            text-align: center;
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+            background-image: url("https://images.unsplash.com/photo-1589526174056-2d6960ead9a2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .hero-banner h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .hero-banner .trophy-emoji {
+            font-size: 4rem;
+            animation: rotate 3s ease-in-out infinite;
+        }
+        
+        @keyframes rotate {
+            0%, 100% {
+                transform: rotate(0deg);
+            }
+            25% {
+                transform: rotate(-10deg);
+            }
+            75% {
+                transform: rotate(10deg);
+            }
+        }
+        
+        .hero-banner p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .stats-banner {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            display: inline-flex;
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            display: block;
+            line-height: 1;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .bestsellers-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        .bestsellers-controls {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .period-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 0.25rem;
+        }
+        
+        .period-tab {
+            background: none;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: #7f8c8d;
+        }
+        
+        .period-tab.active {
+            background: #3498db;
+            color: white;
+            box-shadow: 0 2px 4px rgba(52, 152, 219, 0.3);
+        }
+        
+        .bestsellers-filters {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .filter-select {
+            padding: 0.5rem 1rem;
+            border: 2px solid #ecf0f1;
+            border-radius: 8px;
+            background: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+        
+        .bestsellers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+        
+        .bestseller-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .bestseller-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        
+        .rank-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            z-index: 2;
+            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.4);
+        }
+        
+        .rank-badge.rank-1 {
+            background: linear-gradient(135deg, #f1c40f, #f39c12);
+            animation: goldGlow 2s ease-in-out infinite alternate;
+        }
+        
+        .rank-badge.rank-2 {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+        }
+        
+        .rank-badge.rank-3 {
+            background: linear-gradient(135deg, #cd7f32, #a0522d);
+        }
+        
+        @keyframes goldGlow {
+            0% {
+                box-shadow: 0 4px 15px rgba(241, 196, 15, 0.4);
+            }
+            100% {
+                box-shadow: 0 4px 25px rgba(241, 196, 15, 0.8);
+            }
+        }
+        
+        .bestseller-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .bestseller-card:hover .bestseller-image {
+            transform: scale(1.1);
+        }
+        
+        .bestseller-info {
+            padding: 1.5rem;
+        }
+        
+        .bestseller-category {
+            color: #3498db;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+        
+        .bestseller-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+        
+        .bestseller-description {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+        
+        .bestseller-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .sales-count {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #27ae60;
+            font-weight: 600;
+        }
+        
+        .rating-display {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .stars {
+            color: #f1c40f;
+        }
+        
+        .rating-count {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .bestseller-pricing {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .bestseller-price {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #3498db;
+        }
+        
+        .bestseller-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn-bestseller {
+            flex: 1;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-bestseller:hover {
+            background: linear-gradient(135deg, #2980b9, #1f4e79);
+            transform: translateY(-2px);
+        }
+        
+        .btn-view {
+            background: #ecf0f1;
+            color: #2c3e50;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-view:hover {
+            background: #bdc3c7;
+        }
+        
+        .trending-section {
+            background: white;
+            margin: 3rem 0;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        .trending-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .trending-header h2 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .trending-header p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+        
+        .trending-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .trending-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .trending-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+        
+        .trending-rank {
+            background: #3498db;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+        
+        .trending-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .trending-details {
+            flex: 1;
+        }
+        
+        .trending-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.25rem;
+        }
+        
+        .trending-sales {
+            color: #27ae60;
+            font-size: 0.9rem;
+        }
+        
+        .categories-section {
+            margin-top: 3rem;
+        }
+        
+        .categories-section h2 {
+            text-align: center;
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .category-bestseller {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .category-bestseller:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        
+        .category-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #3498db;
+        }
+        
+        .category-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .category-bestseller-name {
+            color: #7f8c8d;
+            margin-bottom: 1rem;
+        }
+        
+        .no-products {
+            text-align: center;
+            padding: 3rem;
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-banner h1 {
+                font-size: 2.5rem;
+            }
+            
+            .stats-banner {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .bestsellers-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .period-tabs {
+                justify-content: center;
+            }
+            
+            .bestsellers-filters {
+                justify-content: center;
+            }
+            
+            .bestsellers-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+            
+            .trending-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <h1><a href="index.html" style="text-decoration: none; color: inherit;"><i class="fas fa-shopping-cart"></i> ShopVerse</a></h1>
+                </div>
+                
+                <!-- Search Bar -->
+                <div class="search-container">
+                    <input type="text" id="searchInput" placeholder="Search for products..." class="search-input">
+                    <button class="search-btn"><i class="fas fa-search"></i></button>
+                    <div id="searchSuggestions" class="search-suggestions"></div>
+                </div>
+                
+                <!-- User Actions -->
+                <div class="user-actions">
+                    <div class="cart-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span id="cartCount" class="cart-count">0</span>
+                    </div>
+                    <div class="user-menu">
+                        <a href="login.html" id="loginBtn" class="btn-primary">Login</a>
+                        <a href="register.html" id="registerBtn" class="btn-secondary">Register</a>
+                        <div id="userProfile" class="user-profile hidden">
+                            <span id="userName"></span>
+                            <a href="profile.html" class="btn-secondary" style="margin-left: 10px; text-decoration: none; font-size: 0.9rem;">Profile</a>
+                            <a href="order_history.html" class="btn-secondary" style="margin-left: 10px; text-decoration: none; font-size: 0.9rem;">Order History</a>
+                            <button id="logoutBtn" class="btn-logout">Logout</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Menu -->
+    <nav class="main-nav">
+        <div class="container">
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="products.html">All Products</a></li>
+                <li><a href="hot-deals.html">Hot Deals</a></li>
+                <li><a href="best-sellers.html" class="active">Best Sellers</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="best-sellers-page">
+        <!-- Hero Banner -->
+        <div class="hero-banner">
+            <div class="container">
+                <div class="trophy-emoji">🏆</div>
+                <h1>Best Sellers</h1>
+                <p>Top-rated and most-purchased products just for you!</p>
+                
+                <div class="stats-banner">
+                    <div class="stat-item">
+                        <span class="stat-number">10K+</span>
+                        <span class="stat-label">Happy Customers</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">50K+</span>
+                        <span class="stat-label">Products Sold</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">4.8★</span>
+                        <span class="stat-label">Average Rating</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bestsellers-container">
+            <!-- Controls -->
+            <div class="bestsellers-controls">
+                <div class="period-tabs">
+                    <button class="period-tab active" data-period="daily">Daily</button>
+                    <button class="period-tab" data-period="weekly">Weekly</button>
+                    <button class="period-tab" data-period="monthly">Monthly</button>
+                </div>
+                
+                <div class="bestsellers-filters">
+                    <select class="filter-select" id="categoryFilter">
+                        <option value="all">All Categories</option>
+                        <option value="groceries">Groceries</option>
+                        <option value="vegetables">Vegetables</option>
+                        <option value="fruits">Fruits</option>
+                        <option value="meat">Meat</option>
+                        <option value="bakery">Bakery</option>
+                        <option value="cosmetics">Cosmetics</option>
+                    </select>
+                    
+                    <select class="filter-select" id="priceFilter">
+                        <option value="all">All Prices</option>
+                        <option value="0-10">$0 - $10</option>
+                        <option value="10-25">$10 - $25</option>
+                        <option value="25-50">$25 - $50</option>
+                        <option value="50+">$50+</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Best Sellers Grid -->
+            <div class="bestsellers-grid" id="bestsellersGrid">
+                <!-- Best sellers will be loaded dynamically -->
+            </div>
+
+            <!-- Trending Section -->
+            <div class="trending-section">
+                <div class="trending-header">
+                    <h2>📈 Trending Now</h2>
+                    <p>Products gaining popularity this week</p>
+                </div>
+                
+                <div class="trending-grid" id="trendingGrid">
+                    <!-- Trending items will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Categories Section -->
+            <div class="categories-section">
+                <h2>🎯 Category Champions</h2>
+                
+                <div class="categories-grid">
+                    <div class="category-bestseller">
+                        <div class="category-icon">🥬</div>
+                        <div class="category-title">Vegetables</div>
+                        <div class="category-bestseller-name">Organic Tomatoes</div>
+                        <button class="btn-bestseller" onclick="filterByCategory('vegetables')">
+                            View Category
+                        </button>
+                    </div>
+                    
+                    <div class="category-bestseller">
+                        <div class="category-icon">🍌</div>
+                        <div class="category-title">Fruits</div>
+                        <div class="category-bestseller-name">Fresh Bananas</div>
+                        <button class="btn-bestseller" onclick="filterByCategory('fruits')">
+                            View Category
+                        </button>
+                    </div>
+                    
+                    <div class="category-bestseller">
+                        <div class="category-icon">🍞</div>
+                        <div class="category-title">Bakery</div>
+                        <div class="category-bestseller-name">Fresh Bread</div>
+                        <button class="btn-bestseller" onclick="filterByCategory('bakery')">
+                            View Category
+                        </button>
+                    </div>
+                    
+                    <div class="category-bestseller">
+                        <div class="category-icon">🛒</div>
+                        <div class="category-title">Groceries</div>
+                        <div class="category-bestseller-name">Organic Milk</div>
+                        <button class="btn-bestseller" onclick="filterByCategory('groceries')">
+                            View Category
+                        </button>
+                    </div>
+                    
+                    <div class="category-bestseller">
+                        <div class="category-icon">💄</div>
+                        <div class="category-title">Cosmetics</div>
+                        <div class="category-bestseller-name">Beauty Bundle</div>
+                        <button class="btn-bestseller" onclick="filterByCategory('cosmetics')">
+                            View Category
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>ShopVerse</h3>
+                    <p>Your trusted online grocery store delivering fresh products to your doorstep.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="products.html">Products</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Customer Service</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Track Order</a></li>
+                        <li><a href="#">Returns</a></li>
+                        <li><a href="#">Shipping Info</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect With Us</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 ShopVerse. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="auth.js"></script>
+    <script>
+        // Best sellers data with sales information
+        const bestSellers = [
+            {
+                id: 1,
+                name: "Fresh Bananas",
+                category: "fruits",
+                image: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=300&h=220&fit=crop",
+                price: 2.99,
+                description: "Sweet and ripe bananas perfect for snacks",
+                salesCount: 1250,
+                rating: 4.8,
+                reviewCount: 324,
+                rank: 1
+            },
+            {
+                id: 2,
+                name: "Organic Tomatoes",
+                category: "vegetables",
+                image: "https://images.unsplash.com/photo-1561136594-7f68413baa99?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                price: 3.49,
+                description: "Fresh organic tomatoes from local farms",
+                salesCount: 980,
+                rating: 4.7,
+                reviewCount: 256,
+                rank: 2
+            },
+            {
+                id: 3,
+                name: "Premium Chicken Breast",
+                category: "meat",
+                image: "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=300&h=220&fit=crop",
+                price: 8.99,
+                description: "High-quality chicken breast, perfect for grilling",
+                salesCount: 875,
+                rating: 4.9,
+                reviewCount: 198,
+                rank: 3
+            },
+            {
+                id: 4,
+                name: "Artisan Bread",
+                category: "bakery",
+                image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300&h=220&fit=crop",
+                price: 2.49,
+                description: "Freshly baked artisan bread with crispy crust",
+                salesCount: 756,
+                rating: 4.6,
+                reviewCount: 142,
+                rank: 4
+            },
+            {
+                id: 5,
+                name: "Organic Milk",
+                category: "groceries",
+                image: "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=300&h=220&fit=crop",
+                price: 3.99,
+                description: "Fresh organic milk from grass-fed cows",
+                salesCount: 692,
+                rating: 4.5,
+                reviewCount: 89,
+                rank: 5
+            },
+            {
+                id: 6,
+                name: "Beauty Bundle",
+                category: "cosmetics",
+                image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=300&h=220&fit=crop",
+                price: 49.99,
+                description: "Complete skincare and makeups for daily use",
+                salesCount: 543,
+                rating: 4.7,
+                reviewCount: 167,
+                rank: 6
+            }
+        ];
+
+        const trendingProducts = [
+            { id: 7, name: "Avocado Pack", image: "https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=60&h=60&fit=crop", sales: 234 },
+            { id: 8, name: "Greek Yogurt", image: "https://unsplash.com/photos/a-bowl-of-granola-with-a-spoon-in-it-FCR4UVfKGgw", sales: 198 },
+            { id: 9, name: "Salmon Fillet", image: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=60&h=60&fit=crop", sales: 176 },
+            { id: 10, name: "Quinoa", image: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=60&h=60&fit=crop", sales: 154 },
+            { id: 11, name: "Almond Butter", image: "https://images.unsplash.com/photo-1571068316344-75bc76f77890?w=60&h=60&fit=crop", sales: 132 },
+            { id: 12, name: "Coconut Oil", image: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=60&h=60&fit=crop", sales: 118 }
+        ];
+
+        let filteredBestSellers = [...bestSellers];
+        let currentPeriod = 'daily';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadBestSellers();
+            loadTrendingProducts();
+            setupControls();
+        });
+
+        function loadBestSellers() {
+            displayBestSellers();
+        }
+
+        function displayBestSellers() {
+            const bestsellersGrid = document.getElementById('bestsellersGrid');
+            
+            if (filteredBestSellers.length === 0) {
+                bestsellersGrid.innerHTML = '<div class="no-products"><h3>No best sellers found</h3><p>Try adjusting your filters.</p></div>';
+                return;
+            }
+
+            bestsellersGrid.innerHTML = filteredBestSellers.map(product => createBestSellerCard(product)).join('');
+        }
+
+        function createBestSellerCard(product) {
+            const rankClass = product.rank <= 3 ? `rank-${product.rank}` : '';
+            
+            return `
+                <div class="bestseller-card" onclick="viewProduct(${product.id})">
+                    <div class="rank-badge ${rankClass}">#${product.rank}</div>
+                    <img src="${product.image}" alt="${product.name}" class="bestseller-image">
+                    <div class="bestseller-info">
+                        <div class="bestseller-category">${product.category}</div>
+                        <h3 class="bestseller-title">${product.name}</h3>
+                        <p class="bestseller-description">${product.description}</p>
+                        
+                        <div class="bestseller-stats">
+                            <div class="sales-count">
+                                <i class="fas fa-fire"></i>
+                                ${product.salesCount} sold
+                            </div>
+                            <div class="rating-display">
+                                <div class="stars">${'★'.repeat(Math.floor(product.rating))}${'☆'.repeat(5-Math.floor(product.rating))}</div>
+                                <span class="rating-count">(${product.reviewCount})</span>
+                            </div>
+                        </div>
+                        
+                        <div class="bestseller-pricing">
+                            <span class="bestseller-price">$${product.price.toFixed(2)}</span>
+                        </div>
+                        
+                        <div class="bestseller-actions">
+                            <button class="btn-bestseller" onclick="event.stopPropagation(); addToCart(${product.id})">
+                                <i class="fas fa-cart-plus"></i>
+                                Add to Cart
+                            </button>
+                            <button class="btn-view" onclick="event.stopPropagation(); viewProduct(${product.id})">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function loadTrendingProducts() {
+            const trendingGrid = document.getElementById('trendingGrid');
+            
+            trendingGrid.innerHTML = trendingProducts.map((product, index) => `
+                <div class="trending-item">
+                    <div class="trending-rank">${index + 1}</div>
+                    <img src="${product.image}" alt="${product.name}" class="trending-image">
+                    <div class="trending-details">
+                        <div class="trending-name">${product.name}</div>
+                        <div class="trending-sales">${product.sales} sold this week</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function setupControls() {
+            // Period tabs
+            document.querySelectorAll('.period-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.period-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    currentPeriod = this.dataset.period;
+                    updateBestSellersForPeriod();
+                });
+            });
+
+            // Category filter
+            document.getElementById('categoryFilter').addEventListener('change', function() {
+                filterBestSellers();
+            });
+
+            // Price filter
+            document.getElementById('priceFilter').addEventListener('change', function() {
+                filterBestSellers();
+            });
+        }
+
+        function updateBestSellersForPeriod() {
+            // In a real application, you would fetch different data based on the period
+            // For demo purposes, we'll just shuffle the sales counts
+            const multiplier = currentPeriod === 'daily' ? 1 : currentPeriod === 'weekly' ? 7 : 30;
+            
+            filteredBestSellers = bestSellers.map(product => ({
+                ...product,
+                salesCount: Math.floor(product.salesCount * multiplier * (0.8 + Math.random() * 0.4))
+            })).sort((a, b) => b.salesCount - a.salesCount);
+
+            // Update ranks
+            filteredBestSellers.forEach((product, index) => {
+                product.rank = index + 1;
+            });
+
+            displayBestSellers();
+        }
+
+        function filterBestSellers() {
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const priceFilter = document.getElementById('priceFilter').value;
+
+            filteredBestSellers = bestSellers.filter(product => {
+                // Category filter
+                const categoryMatch = categoryFilter === 'all' || product.category === categoryFilter;
+                
+                // Price filter
+                let priceMatch = true;
+                if (priceFilter !== 'all') {
+                    const price = product.price;
+                    switch(priceFilter) {
+                        case '0-10':
+                            priceMatch = price <= 10;
+                            break;
+                        case '10-25':
+                            priceMatch = price > 10 && price <= 25;
+                            break;
+                        case '25-50':
+                            priceMatch = price > 25 && price <= 50;
+                            break;
+                        case '50+':
+                            priceMatch = price > 50;
+                            break;
+                    }
+                }
+                
+                return categoryMatch && priceMatch;
+            });
+
+            // Re-rank filtered products
+            filteredBestSellers.forEach((product, index) => {
+                product.rank = index + 1;
+            });
+
+            displayBestSellers();
+        }
+
+        function filterByCategory(category) {
+            document.getElementById('categoryFilter').value = category;
+            filterBestSellers();
+            
+            // Scroll to best sellers grid
+            document.getElementById('bestsellersGrid').scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+        }
+
+        function viewProduct(productId) {
+            window.location.href = `product-detail.html?id=${productId}`;
+        }
+    </script>
+</body>
+</html>
+

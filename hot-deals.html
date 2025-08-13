@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hot Deals - ShopVerse</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .hot-deals-page {
+            padding: 2rem 0;
+            min-height: 80vh;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+        }
+        
+        .hero-banner {
+            text-align: center;
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+            background-image: url("https://images.unsplash.com/photo-1672363547647-8fad02572412?q=80&w=1172&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .hero-banner h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .hero-banner .fire-emoji {
+            font-size: 4rem;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+        
+        .hero-banner p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .countdown-timer {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            display: inline-flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .timer-unit {
+            text-align: center;
+        }
+        
+        .timer-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            display: block;
+            line-height: 1;
+        }
+        
+        .timer-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .deals-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        .deals-controls {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .deals-filters {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .filter-select {
+            padding: 0.5rem 1rem;
+            border: 2px solid #ecf0f1;
+            border-radius: 8px;
+            background: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+        }
+        
+        .deals-sort {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        
+        .deals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .deal-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .deal-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        
+        .deal-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            z-index: 2;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        .deal-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .deal-card:hover .deal-image {
+            transform: scale(1.1);
+        }
+        
+        .deal-info {
+            padding: 1.5rem;
+        }
+        
+        .deal-category {
+            color: #e74c3c;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+        
+        .deal-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+        
+        .deal-description {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+        
+        .deal-pricing {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .deal-price {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #e74c3c;
+        }
+        
+        .original-price {
+            font-size: 1.2rem;
+            color: #95a5a6;
+            text-decoration: line-through;
+        }
+        
+        .savings {
+            background: #27ae60;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .deal-timer {
+            background: #f8f9fa;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .deal-timer-label {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            margin-bottom: 0.25rem;
+        }
+        
+        .deal-timer-time {
+            font-weight: 700;
+            color: #e74c3c;
+            font-size: 1rem;
+        }
+        
+        .deal-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn-deal {
+            flex: 1;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-deal:hover {
+            background: linear-gradient(135deg, #c0392b, #a93226);
+            transform: translateY(-2px);
+        }
+        
+        .btn-view {
+            background: #ecf0f1;
+            color: #2c3e50;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-view:hover {
+            background: #bdc3c7;
+        }
+        
+        .flash-sale-section {
+            background: white;
+            margin: 3rem 0;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        .flash-sale-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .flash-sale-header h2 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .flash-sale-timer {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            display: inline-flex;
+            gap: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .bundle-deals {
+            margin-top: 3rem;
+        }
+        
+        .bundle-deals h2 {
+            text-align: center;
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .bundle-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .bundle-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .bundle-title {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .bundle-subtitle {
+            color: #7f8c8d;
+        }
+        
+        .bundle-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .bundle-item {
+            text-align: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .bundle-item img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-bottom: 0.5rem;
+        }
+        
+        .bundle-pricing {
+            text-align: center;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .bundle-price {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #e74c3c;
+            margin-bottom: 0.5rem;
+        }
+        
+        .bundle-original {
+            font-size: 1.2rem;
+            color: #95a5a6;
+            text-decoration: line-through;
+            margin-bottom: 1rem;
+        }
+        
+        .no-deals {
+            text-align: center;
+            padding: 3rem;
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-banner h1 {
+                font-size: 2.5rem;
+            }
+            
+            .countdown-timer {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .deals-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .deals-filters {
+                justify-content: center;
+            }
+            
+            .deals-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+            
+            .bundle-items {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <h1><a href="index.html" style="text-decoration: none; color: inherit;"><i class="fas fa-shopping-cart"></i> ShopVerse</a></h1>
+                </div>
+                
+                <!-- Search Bar -->
+                <div class="search-container">
+                    <input type="text" id="searchInput" placeholder="Search for products..." class="search-input">
+                    <button class="search-btn"><i class="fas fa-search"></i></button>
+                    <div id="searchSuggestions" class="search-suggestions"></div>
+                </div>
+                
+                <!-- User Actions -->
+                <div class="user-actions">
+                    <div class="cart-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span id="cartCount" class="cart-count">0</span>
+                    </div>
+                    <div class="user-menu">
+                        <a href="login.html" id="loginBtn" class="btn-primary">Login</a>
+                        <a href="register.html" id="registerBtn" class="btn-secondary">Register</a>
+                        <div id="userProfile" class="user-profile hidden">
+                            <span id="userName"></span>
+                            <a href="profile.html" class="btn-secondary" style="margin-left: 10px; text-decoration: none; font-size: 0.9rem;">Profile</a>
+                            <a href="order_history.html" class="btn-secondary" style="margin-left: 10px; text-decoration: none; font-size: 0.9rem;">Order History</a>
+                            <button id="logoutBtn" class="btn-logout">Logout</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Menu -->
+    <nav class="main-nav">
+        <div class="container">
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="products.html">All Products</a></li>
+                <li><a href="hot-deals.html" class="active">Hot Deals</a></li>
+                <li><a href="best-sellers.html">Best Sellers</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="hot-deals-page">
+        <!-- Hero Banner -->
+        <div class="hero-banner">
+            <div class="container">
+                <div class="fire-emoji">🔥</div>
+                <h1>Hot Deals</h1>
+                <p>Limited-time discounts on top products!</p>
+                
+                <div class="countdown-timer" id="mainCountdown">
+                    <div class="timer-unit">
+                        <span class="timer-number" id="hours">12</span>
+                        <span class="timer-label">Hours</span>
+                    </div>
+                    <div class="timer-unit">
+                        <span class="timer-number" id="minutes">34</span>
+                        <span class="timer-label">Minutes</span>
+                    </div>
+                    <div class="timer-unit">
+                        <span class="timer-number" id="seconds">56</span>
+                        <span class="timer-label">Seconds</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="deals-container">
+            <!-- Controls -->
+            <div class="deals-controls">
+                <div class="deals-filters">
+                    <select class="filter-select" id="categoryFilter">
+                        <option value="all">All Categories</option>
+                        <option value="groceries">Groceries</option>
+                        <option value="vegetables">Vegetables</option>
+                        <option value="fruits">Fruits</option>
+                        <option value="meat">Meat</option>
+                        <option value="bakery">Bakery</option>
+                        <option value="cosmetics">Cosmetics</option>
+                    </select>
+                    
+                    <select class="filter-select" id="discountFilter">
+                        <option value="all">All Discounts</option>
+                        <option value="10">10%+ Off</option>
+                        <option value="20">20%+ Off</option>
+                        <option value="30">30%+ Off</option>
+                        <option value="50">50%+ Off</option>
+                    </select>
+                    
+                    <select class="filter-select" id="priceFilter">
+                        <option value="all">All Prices</option>
+                        <option value="0-10">$0 - $10</option>
+                        <option value="10-25">$10 - $25</option>
+                        <option value="25-50">$25 - $50</option>
+                        <option value="50+">$50+</option>
+                    </select>
+                </div>
+                
+                <div class="deals-sort">
+                    <label for="sortDeals">Sort by:</label>
+                    <select class="filter-select" id="sortDeals">
+                        <option value="discount">Biggest Discount</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="ending-soon">Ending Soon</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Flash Sale Section -->
+            <div class="flash-sale-section">
+                <div class="flash-sale-header">
+                    <h2>⚡ Flash Sale</h2>
+                    <div class="flash-sale-timer">
+                        <span>Ends in: <span id="flashHours">02</span>h <span id="flashMinutes">15</span>m <span id="flashSeconds">30</span>s</span>
+                    </div>
+                </div>
+                
+                <div class="deals-grid" id="flashDealsGrid">
+                    <!-- Flash deals will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Regular Deals -->
+            <div class="deals-grid" id="dealsGrid">
+                <!-- Deals will be loaded dynamically -->
+            </div>
+
+            <!-- Bundle Deals -->
+            <div class="bundle-deals">
+                <h2>🎁 Bundle Deals</h2>
+                
+                <div class="bundle-card">
+                    <div class="bundle-header">
+                        <h3 class="bundle-title">Fresh Starter Pack</h3>
+                        <p class="bundle-subtitle">Everything you need for a healthy week</p>
+                    </div>
+                    
+                    <div class="bundle-items">
+                        <div class="bundle-item">
+                            <img src="https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=80&h=80&fit=crop" alt="Bananas">
+                            <div>Fresh Bananas</div>
+                        </div>
+                        <div class="bundle-item">
+                            <img src="https://images.unsplash.com/photo-1561136594-7f68413baa99?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Tomatoes">
+                            <div>Organic Tomatoes</div>
+                        </div>
+                        <div class="bundle-item">
+                            <img src="https://images.unsplash.com/photo-1550583724-b2692b85b150?w=80&h=80&fit=crop" alt="Milk">
+                            <div>Fresh Milk</div>
+                        </div>
+                        <div class="bundle-item">
+                            <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=80&h=80&fit=crop" alt="Bread">
+                            <div>Fresh Bread</div>
+                        </div>
+                    </div>
+                    
+                    <div class="bundle-pricing">
+                        <div class="bundle-price">$18.99</div>
+                        <div class="bundle-original">Regular: $24.96</div>
+                        <button class="btn-deal">
+                            <i class="fas fa-cart-plus"></i>
+                            Add Bundle to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>ShopVerse</h3>
+                    <p>Your trusted online grocery store delivering fresh products to your doorstep.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="products.html">Products</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Customer Service</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Track Order</a></li>
+                        <li><a href="#">Returns</a></li>
+                        <li><a href="#">Shipping Info</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect With Us</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 ShopVerse. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="auth.js"></script>
+    <script>
+        // Hot deals data
+        const hotDeals = [
+            {
+                id: 1,
+                name: "Fresh Bananas",
+                category: "fruits",
+                image: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=300&h=220&fit=crop",
+                originalPrice: 3.99,
+                dealPrice: 2.99,
+                discount: 25,
+                description: "Sweet and ripe bananas perfect for smoothies",
+                timeLeft: "2h 15m",
+                isFlash: true
+            },
+            {
+                id: 2,
+                name: "Organic Tomatoes",
+                category: "vegetables",
+                image: "https://images.unsplash.com/photo-1561136594-7f68413baa99?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                originalPrice: 4.99,
+                dealPrice: 3.49,
+                discount: 30,
+                description: "Fresh organic tomatoes from local farms",
+                timeLeft: "5h 30m",
+                isFlash: false
+            },
+            {
+                id: 3,
+                name: "Premium Chicken Breast",
+                category: "meat",
+                image: "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=300&h=220&fit=crop",
+                originalPrice: 12.99,
+                dealPrice: 8.99,
+                discount: 31,
+                description: "High-quality chicken breast, perfect for grilling",
+                timeLeft: "1h 45m",
+                isFlash: true
+            },
+            {
+                id: 4,
+                name: "Artisan Bread",
+                category: "bakery",
+                image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300&h=220&fit=crop",
+                originalPrice: 3.49,
+                dealPrice: 2.49,
+                discount: 29,
+                description: "Freshly baked artisan bread",
+                timeLeft: "8h 20m",
+                isFlash: false
+            },
+            {
+                id: 5,
+                name: "Organic Milk",
+                category: "groceries",
+                image: "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=300&h=220&fit=crop",
+                originalPrice: 5.99,
+                dealPrice: 3.99,
+                discount: 33,
+                description: "Fresh organic milk from grass-fed cows",
+                timeLeft: "3h 10m",
+                isFlash: true
+            },
+            {
+                id: 6,
+                name: "Beauty Bundle",
+                category: "cosmetics",
+                image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=300&h=220&fit=crop",
+                originalPrice: 89.99,
+                dealPrice: 49.99,
+                discount: 44,
+                description: "Complete skincare and makeup bundle",
+                timeLeft: "12h 45m",
+                isFlash: false
+            }
+        ];
+
+        let filteredDeals = [...hotDeals];
+        let countdownInterval;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDeals();
+            setupFilters();
+            startCountdown();
+        });
+
+        function loadDeals() {
+            displayFlashDeals();
+            displayRegularDeals();
+        }
+
+        function displayFlashDeals() {
+            const flashDeals = filteredDeals.filter(deal => deal.isFlash);
+            const flashGrid = document.getElementById('flashDealsGrid');
+            
+            if (flashDeals.length === 0) {
+                flashGrid.innerHTML = '<div class="no-deals"><h3>No flash deals available</h3></div>';
+                return;
+            }
+
+            flashGrid.innerHTML = flashDeals.map(deal => createDealCard(deal, true)).join('');
+        }
+
+        function displayRegularDeals() {
+            const regularDeals = filteredDeals.filter(deal => !deal.isFlash);
+            const dealsGrid = document.getElementById('dealsGrid');
+            
+            if (regularDeals.length === 0) {
+                dealsGrid.innerHTML = '<div class="no-deals"><h3>No deals available</h3><p>Try adjusting your filters.</p></div>';
+                return;
+            }
+
+            dealsGrid.innerHTML = regularDeals.map(deal => createDealCard(deal, false)).join('');
+        }
+
+        function createDealCard(deal, isFlash = false) {
+            const savings = deal.originalPrice - deal.dealPrice;
+            
+            return `
+                <div class="deal-card" onclick="viewDeal(${deal.id})">
+                    <div class="deal-badge">${deal.discount}% OFF</div>
+                    <img src="${deal.image}" alt="${deal.name}" class="deal-image">
+                    <div class="deal-info">
+                        <div class="deal-category">${deal.category}</div>
+                        <h3 class="deal-title">${deal.name}</h3>
+                        <p class="deal-description">${deal.description}</p>
+                        
+                        <div class="deal-pricing">
+                            <span class="deal-price">$${deal.dealPrice.toFixed(2)}</span>
+                            <span class="original-price">$${deal.originalPrice.toFixed(2)}</span>
+                            <span class="savings">Save $${savings.toFixed(2)}</span>
+                        </div>
+                        
+                        ${isFlash ? `
+                        <div class="deal-timer">
+                            <div class="deal-timer-label">Deal ends in:</div>
+                            <div class="deal-timer-time">${deal.timeLeft}</div>
+                        </div>
+                        ` : ''}
+                        
+                        <div class="deal-actions">
+                            <button class="btn-deal" onclick="event.stopPropagation(); addDealToCart(${deal.id})">
+                                <i class="fas fa-cart-plus"></i>
+                                Add to Cart
+                            </button>
+                            <button class="btn-view" onclick="event.stopPropagation(); viewDeal(${deal.id})">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function setupFilters() {
+            // Category filter
+            document.getElementById('categoryFilter').addEventListener('change', function() {
+                filterDeals();
+            });
+
+            // Discount filter
+            document.getElementById('discountFilter').addEventListener('change', function() {
+                filterDeals();
+            });
+
+            // Price filter
+            document.getElementById('priceFilter').addEventListener('change', function() {
+                filterDeals();
+            });
+
+            // Sort filter
+            document.getElementById('sortDeals').addEventListener('change', function() {
+                sortDeals(this.value);
+            });
+        }
+
+        function filterDeals() {
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const discountFilter = parseInt(document.getElementById('discountFilter').value) || 0;
+            const priceFilter = document.getElementById('priceFilter').value;
+
+            filteredDeals = hotDeals.filter(deal => {
+                // Category filter
+                const categoryMatch = categoryFilter === 'all' || deal.category === categoryFilter;
+                
+                // Discount filter
+                const discountMatch = deal.discount >= discountFilter;
+                
+                // Price filter
+                let priceMatch = true;
+                if (priceFilter !== 'all') {
+                    const price = deal.dealPrice;
+                    switch(priceFilter) {
+                        case '0-10':
+                            priceMatch = price <= 10;
+                            break;
+                        case '10-25':
+                            priceMatch = price > 10 && price <= 25;
+                            break;
+                        case '25-50':
+                            priceMatch = price > 25 && price <= 50;
+                            break;
+                        case '50+':
+                            priceMatch = price > 50;
+                            break;
+                    }
+                }
+                
+                return categoryMatch && discountMatch && priceMatch;
+            });
+
+            loadDeals();
+        }
+
+        function sortDeals(sortBy) {
+            switch(sortBy) {
+                case 'discount':
+                    filteredDeals.sort((a, b) => b.discount - a.discount);
+                    break;
+                case 'price-low':
+                    filteredDeals.sort((a, b) => a.dealPrice - b.dealPrice);
+                    break;
+                case 'price-high':
+                    filteredDeals.sort((a, b) => b.dealPrice - a.dealPrice);
+                    break;
+                case 'ending-soon':
+                    // Sort flash deals first, then by time left (simplified)
+                    filteredDeals.sort((a, b) => {
+                        if (a.isFlash && !b.isFlash) return -1;
+                        if (!a.isFlash && b.isFlash) return 1;
+                        return 0;
+                    });
+                    break;
+            }
+            loadDeals();
+        }
+
+        function startCountdown() {
+            // Main countdown timer
+            let hours = 12;
+            let minutes = 34;
+            let seconds = 56;
+
+            countdownInterval = setInterval(() => {
+                seconds--;
+                
+                if (seconds < 0) {
+                    seconds = 59;
+                    minutes--;
+                    
+                    if (minutes < 0) {
+                        minutes = 59;
+                        hours--;
+                        
+                        if (hours < 0) {
+                            // Reset or end deals
+                            hours = 23;
+                            minutes = 59;
+                            seconds = 59;
+                        }
+                    }
+                }
+                
+                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+                document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+            }, 1000);
+
+            // Flash sale countdown
+            let flashHours = 2;
+            let flashMinutes = 15;
+            let flashSeconds = 30;
+
+            setInterval(() => {
+                flashSeconds--;
+                
+                if (flashSeconds < 0) {
+                    flashSeconds = 59;
+                    flashMinutes--;
+                    
+                    if (flashMinutes < 0) {
+                        flashMinutes = 59;
+                        flashHours--;
+                        
+                        if (flashHours < 0) {
+                            flashHours = 5;
+                            flashMinutes = 59;
+                            flashSeconds = 59;
+                        }
+                    }
+                }
+                
+                document.getElementById('flashHours').textContent = flashHours.toString().padStart(2, '0');
+                document.getElementById('flashMinutes').textContent = flashMinutes.toString().padStart(2, '0');
+                document.getElementById('flashSeconds').textContent = flashSeconds.toString().padStart(2, '0');
+            }, 1000);
+        }
+
+        function viewDeal(dealId) {
+            // Find the corresponding product in the main products array
+            const deal = hotDeals.find(d => d.id === dealId);
+            if (deal) {
+                // Redirect to product detail page
+                window.location.href = `product-detail.html?id=${dealId}`;
+            }
+        }
+
+        function addDealToCart(dealId) {
+            const deal = hotDeals.find(d => d.id === dealId);
+            if (deal) {
+                // Add to cart using the main addToCart function
+                addToCart(dealId);
+                
+                // Show success message
+                alert(`${deal.name} added to cart at the special deal price of $${deal.dealPrice.toFixed(2)}!`);
+            }
+        }
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', function() {
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+        });
+    </script>
+</body>
+</html>
+

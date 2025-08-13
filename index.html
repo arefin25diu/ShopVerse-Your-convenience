@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopVerse - Your One-Stop Shopping Destination</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <h1><i class="fas fa-shopping-cart"></i> ShopVerse</h1>
+                </div>
+                
+                <!-- Search Bar -->
+                <div class="search-container">
+                    <input type="text" id="searchInput" placeholder="Search for products" class="search-input">
+                    <button class="search-btn"><i class="fas fa-search"></i></button>
+                    <div id="searchSuggestions" class="search-suggestions"></div>
+                </div>
+                
+                <!-- User Actions -->
+                <div class="user-actions">
+                    <div class="cart-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span id="cartCount" class="cart-count">0</span>
+                    </div>
+                    <div class="user-menu">
+                        <a href="login.html" id="loginBtn" class="btn-primary">Login</a>
+                        <a href="register.html" id="registerBtn" class="btn-secondary">Register</a>
+                        <div id="userProfile" class="user-profile hidden">
+                            <span id="userName"></span>
+                            <a href="profile.html" class="btn-secondary" style="margin-left: 10px; text-decoration: none; font-size: 0.9rem;">Profile</a>
+                            <a href="order_history.html" class="btn-secondary" style="margin-left: 10px; text-decoration: none; font-size: 0.9rem;">Order History</a>
+                            <button id="logoutBtn" class="btn-logout">Logout</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Menu -->
+    <nav class="main-nav">
+        <div class="container">
+            <ul class="nav-menu">
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="products.html">All Products</a></li>
+                <li><a href="hot-deals.html">Hot Deals</a></li>
+                <li><a href="best-sellers.html">Best Sellers</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-banner">
+                    <h2>Fresh Groceries Delivered to Your Door</h2>
+                    <p>Shop from thousands of products with the best prices and quality</p>
+                    <button class="btn-cta">Shop Now</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Categories -->
+    <section class="featured-categories">
+        <div class="container">
+            <h2>Shop by Category</h2>
+            <div class="categories-grid">
+                <div class="category-card" data-category="vegetables">
+                    <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?w=200&h=200&fit=crop" alt="Vegetables">
+                    <h3>Fresh Vegetables</h3>
+                    <p>Farm fresh vegetables</p>
+                </div>
+                <div class="category-card" data-category="fruits">
+                    <img src="https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=200&h=200&fit=crop" alt="Fruits">
+                    <h3>Fresh Fruits</h3>
+                    <p>Seasonal fruits</p>
+                </div>
+                <div class="category-card" data-category="meat">
+                    <img src="https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=200&h=200&fit=crop" alt="Meat">
+                    <h3>Fresh Meat</h3>
+                    <p>Premium quality meat</p>
+                </div>
+                <div class="category-card" data-category="bakery">
+                    <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=200&h=200&fit=crop" alt="Bakery">
+                    <h3>Bakery Items</h3>
+                    <p>Fresh baked goods</p>
+                </div>
+                <div class="category-card" data-category="groceries">
+                    <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=200&h=200&fit=crop" alt="Groceries">
+                    <h3>Groceries</h3>
+                    <p>Daily essentials</p>
+                </div>
+                <div class="category-card" data-category="cosmetics">
+                    <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=200&h=200&fit=crop" alt="Cosmetics">
+                    <h3>Cosmetics</h3>
+                    <p>Beauty products</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section class="featured-products">
+        <div class="container">
+            <h2>Featured Products</h2>
+            <div id="productsGrid" class="products-grid">
+                <!-- Products will be loaded dynamically -->
+            </div>
+        </div>
+    </section>
+
+ <!-- Special Offers -->
+<section class="special-offers">
+    <h2>Special Offers</h2>
+    <div class="offers-grid">
+        <div class="offer-card">
+            <h3>Flash Sale</h3>
+            <p>Up to 50% off on selected items</p>
+            <div class="countdown" id="flashSaleCountdown">
+                <span class="time-unit"><span id="hours">00</span><small>Hours</small></span>
+                <span class="time-unit"><span id="minutes">00</span><small>Minutes</small></span>
+                <span class="time-unit"><span id="seconds">00</span><small>Seconds</small></span>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>ShopVerse</h3>
+                    <p>Your trusted online grocery store delivering fresh products to your doorstep.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Customer Service</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Track Order</a></li>
+                        <li><a href="#">Returns</a></li>
+                        <li><a href="#">Shipping Info</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect With Us</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 ShopVerse. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email:</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password:</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn-primary">Login</button>
+            </form>
+            <p>Don't have an account? <a href="#" id="switchToRegister">Register here</a></p>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Register</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="registerName">Full Name:</label>
+                    <input type="text" id="registerName" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Email:</label>
+                    <input type="email" id="registerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Password:</label>
+                    <input type="password" id="registerPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPhone">Phone:</label>
+                    <input type="tel" id="registerPhone" required>
+                </div>
+                <button type="submit" class="btn-primary">Register</button>
+            </form>
+            <p>Already have an account? <a href="#" id="switchToLogin">Login here</a></p>
+        </div>
+    </div>
+
+
+
+    <!-- Cart Modal -->
+    <div id="cartModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Shopping Cart</h2>
+            <div id="cartItems"></div>
+            <div class="cart-total">
+                <h3>Total: $<span id="cartTotal">0.00</span></h3>
+                <button id="checkoutBtn" class="btn-primary" onclick="window.location.href='checkout.html'">Proceed to Checkout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Chatbot -->
+    <div id="chatbot" class="chatbot">
+        <div class="chatbot-header">
+            <h4>Customer Support</h4>
+            <button id="chatToggle" class="chat-toggle">
+                <i class="fas fa-comments"></i>
+            </button>
+        </div>
+        <div id="chatWindow" class="chat-window hidden">
+            <div id="chatMessages" class="chat-messages"></div>
+            <div class="chat-input">
+                <input type="text" id="chatInput" placeholder="Type your message...">
+                <button id="sendMessage"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="auth.js"></script>
+</body>
+</html>
+
