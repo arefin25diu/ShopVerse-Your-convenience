@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details - ShopVerse</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .product-detail-page {
+            padding: 2rem 0;
+            min-height: 80vh;
+        }
+        
+        .breadcrumb {
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+        
+        .breadcrumb a {
+            color: #e74c3c;
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .product-detail-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        .product-gallery {
+            position: sticky;
+            top: 2rem;
+            height: fit-content;
+        }
+        
+        .main-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .thumbnail-gallery {
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+            padding: 0.5rem 0;
+        }
+        
+        .thumbnail {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+        
+        .thumbnail:hover,
+        .thumbnail.active {
+            border-color: #e74c3c;
+            transform: scale(1.05);
+        }
+        
+        .product-info {
+            padding: 1rem 0;
+        }
+        
+        .product-category {
+            font-size: 0.9rem;
+            color: #e74c3c;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .stars {
+            color: #ffc107;
+            font-size: 1.2rem;
+        }
+        
+        .rating-text {
+            color: #7f8c8d;
+        }
+        
+        .product-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #e74c3c;
+            margin-bottom: 1rem;
+        }
+        
+        .price-original {
+            font-size: 1.5rem;
+            color: #95a5a6;
+            text-decoration: line-through;
+            margin-left: 1rem;
+        }
+        
+        .price-discount {
+            background: #e74c3c;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            margin-left: 1rem;
+        }
+        
+        .availability {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .in-stock {
+            color: #27ae60;
+        }
+        
+        .out-of-stock {
+            color: #e74c3c;
+        }
+        
+        .product-description {
+            margin-bottom: 2rem;
+        }
+        
+        .product-description h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+        
+        .product-description p {
+            line-height: 1.6;
+            color: #7f8c8d;
+            margin-bottom: 1rem;
+        }
+        
+        .product-specs {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        .product-specs h3 {
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+        
+        .specs-list {
+            display: grid;
+            gap: 0.5rem;
+        }
+        
+        .spec-item {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        .spec-label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .spec-value {
+            color: #7f8c8d;
+        }
+        
+        .purchase-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .quantity-label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .quantity-btn {
+            background: #f8f9fa;
+            border: none;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: background 0.3s ease;
+        }
+        
+        .quantity-btn:hover {
+            background: #e9ecef;
+        }
+        
+        .quantity-input {
+            border: none;
+            padding: 0.75rem;
+            width: 60px;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        .purchase-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .btn-add-cart {
+            flex: 1;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-add-cart:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+        
+        .btn-buy-now {
+            flex: 1;
+            background: #2c3e50;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-buy-now:hover {
+            background: #1a252f;
+            transform: translateY(-2px);
+        }
+        
+        .product-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        
+        .action-btn {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #2c3e50;
+        }
+        
+        .action-btn:hover {
+            background: #e9ecef;
+            border-color: #bbb;
+        }
+        
+        .related-products {
+            margin-top: 4rem;
+        }
+        
+        .related-products h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #2c3e50;
+        }
+        
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .related-product {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .related-product:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .related-product img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        
+        .related-product-info {
+            padding: 1rem;
+        }
+        
+        .related-product-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+        
+        .related-product-price {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #e74c3c;
+        }
+        
+        @media (max-width: 768px) {
+            .product-detail-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .product-gallery {
+                position: static;
+            }
+            
+            .main-image {
+                height: 300px;
+            }
+            
+            .product-title {
+                font-size: 1.5rem;
+            }
+            
+            .product-price {
+                font-size: 2rem;
+            }
+            
+            .purchase-buttons {
+                flex-direction: column;
+            }
+            
+            .related-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <h1><a href="index.html" style="text-decoration: none; color: inherit;"><i class="fas fa-shopping-cart"></i> ShopVerse</a></h1>
+                </div>
+                
+                <!-- Search Bar -->
+                <div class="search-container">
+                    <input type="text" id="searchInput" placeholder="Search for products..." class="search-input">
+                    <button class="search-btn"><i class="fas fa-search"></i></button>
+                    <div id="searchSuggestions" class="search-suggestions"></div>
+                </div>
+                
+                <!-- User Actions -->
+                <div class="user-actions">
+                    <div class="cart-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span id="cartCount" class="cart-count">0</span>
+                    </div>
+                    <div class="user-menu">
+                        <a href="login.html" id="loginBtn" class="btn-primary">Login</a>
+                        <a href="register.html" id="registerBtn" class="btn-secondary">Register</a>
+                        <div id="userProfile" class="user-profile hidden">
+                            <span id="userName"></span>
+                            <a href="profile.html" class="btn-secondary" style="margin-left: 10px; text-decoration: none; font-size: 0.9rem;">Profile</a>
+                            <a href="order_history.html" class="btn-secondary" style="margin-left: 10px; text-decoration: none; font-size: 0.9rem;">Order History</a>
+                            <button id="logoutBtn" class="btn-logout">Logout</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Menu -->
+    <nav class="main-nav">
+        <div class="container">
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="products.html">All Products</a></li>
+                <li><a href="hot-deals.html">Hot Deals</a></li>
+                <li><a href="best-sellers.html">Best Sellers</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="product-detail-page">
+        <div class="container">
+            <!-- Breadcrumb -->
+            <div class="breadcrumb">
+                <a href="index.html">Home</a> > 
+                <a href="products.html">Products</a> > 
+                <span id="productCategory">Category</span> > 
+                <span id="productName">Product Name</span>
+            </div>
+
+            <div class="product-detail-container">
+                <!-- Product Gallery -->
+                <div class="product-gallery">
+                    <img id="mainImage" src="" alt="Product Image" class="main-image">
+                    <div class="thumbnail-gallery" id="thumbnailGallery">
+                        <!-- Thumbnails will be loaded dynamically -->
+                    </div>
+                </div>
+
+                <!-- Product Information -->
+                <div class="product-info">
+                    <div class="product-category" id="categoryDisplay"></div>
+                    <h1 class="product-title" id="productTitle"></h1>
+                    
+                    <div class="product-rating">
+                        <div class="stars" id="productStars">★★★★★</div>
+                        <span class="rating-text" id="ratingText">(4.5 out of 5 - 128 reviews)</span>
+                    </div>
+
+                    <div class="product-price">
+                        <span id="currentPrice">$0.00</span>
+                        <span class="price-original" id="originalPrice" style="display: none;">$0.00</span>
+                        <span class="price-discount" id="discountBadge" style="display: none;">20% OFF</span>
+                    </div>
+
+                    <div class="availability" id="availabilityStatus">
+                        <i class="fas fa-check-circle"></i>
+                        <span>In Stock</span>
+                    </div>
+
+                    <div class="product-description">
+                        <h3>Description</h3>
+                        <p id="productDescription"></p>
+                    </div>
+
+                    <div class="product-specs">
+                        <h3>Specifications</h3>
+                        <div class="specs-list" id="specsList">
+                            <!-- Specifications will be loaded dynamically -->
+                        </div>
+                    </div>
+
+                    <div class="purchase-section">
+                        <div class="quantity-selector">
+                            <span class="quantity-label">Quantity:</span>
+                            <div class="quantity-controls">
+                                <button class="quantity-btn" onclick="changeQuantity(-1)">-</button>
+                                <input type="number" class="quantity-input" id="quantityInput" value="1" min="1" max="10">
+                                <button class="quantity-btn" onclick="changeQuantity(1)">+</button>
+                            </div>
+                        </div>
+
+                        <div class="purchase-buttons">
+                            <button class="btn-add-cart" onclick="addToCartFromDetail()">
+                                <i class="fas fa-cart-plus"></i>
+                                Add to Cart
+                            </button>
+                            <button class="btn-buy-now" onclick="buyNow()">
+                                <i class="fas fa-bolt"></i>
+                                Buy Now
+                            </button>
+                        </div>
+
+                        <div class="product-actions">
+                            <button class="action-btn" onclick="addToWishlist()">
+                                <i class="fas fa-heart"></i>
+                                Wishlist
+                            </button>
+                            <button class="action-btn" onclick="shareProduct()">
+                                <i class="fas fa-share"></i>
+                                Share
+                            </button>
+                            <button class="action-btn" onclick="compareProduct()">
+                                <i class="fas fa-balance-scale"></i>
+                                Compare
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Related Products -->
+            <section class="related-products">
+                <h2>Related Products</h2>
+                <div class="related-grid" id="relatedProducts">
+                    <!-- Related products will be loaded dynamically -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>ShopVerse</h3>
+                    <p>Your trusted online grocery store delivering fresh products to your doorstep.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="products.html">Products</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Customer Service</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Track Order</a></li>
+                        <li><a href="#">Returns</a></li>
+                        <li><a href="#">Shipping Info</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect With Us</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 ShopVerse. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        let currentProduct = null;
+        let currentQuantity = 1;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProductDetail();
+        });
+
+        function loadProductDetail() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = parseInt(urlParams.get('id'));
+
+            if (!productId) {
+                window.location.href = 'products.html';
+                return;
+            }
+
+            currentProduct = products.find(p => p.id === productId);
+            
+            if (!currentProduct) {
+                window.location.href = 'products.html';
+                return;
+            }
+
+            displayProductDetail();
+            loadRelatedProducts();
+        }
+
+        function displayProductDetail() {
+            // Update page title
+            document.title = `${currentProduct.name} - Supershop`;
+
+            // Update breadcrumb
+            document.getElementById('productCategory').textContent = currentProduct.category;
+            document.getElementById('productName').textContent = currentProduct.name;
+
+            // Update main content
+            document.getElementById('mainImage').src = currentProduct.image;
+            document.getElementById('mainImage').alt = currentProduct.name;
+            document.getElementById('categoryDisplay').textContent = currentProduct.category;
+            document.getElementById('productTitle').textContent = currentProduct.name;
+            document.getElementById('currentPrice').textContent = `$${currentProduct.price.toFixed(2)}`;
+            document.getElementById('productDescription').textContent = currentProduct.description;
+
+            // Create thumbnail gallery (using same image for demo)
+            const thumbnailGallery = document.getElementById('thumbnailGallery');
+            const thumbnails = Array(4).fill(currentProduct.image);
+            thumbnailGallery.innerHTML = thumbnails.map((img, index) => `
+                <img src="${img}" alt="Thumbnail ${index + 1}" class="thumbnail ${index === 0 ? 'active' : ''}" 
+                     onclick="changeMainImage('${img}', this)">
+            `).join('');
+
+            // Update specifications
+            const specsList = document.getElementById('specsList');
+            const specs = {
+                'Brand': 'Supershop',
+                'Category': currentProduct.category,
+                'Stock': `${currentProduct.stock} items available`,
+                'Weight': '1 kg',
+                'Origin': 'Local Farm',
+                'Expiry': '7 days from delivery'
+            };
+
+            specsList.innerHTML = Object.entries(specs).map(([label, value]) => `
+                <div class="spec-item">
+                    <span class="spec-label">${label}:</span>
+                    <span class="spec-value">${value}</span>
+                </div>
+            `).join('');
+
+            // Update availability
+            const availabilityStatus = document.getElementById('availabilityStatus');
+            if (currentProduct.stock > 0) {
+                availabilityStatus.innerHTML = `
+                    <i class="fas fa-check-circle"></i>
+                    <span class="in-stock">In Stock (${currentProduct.stock} available)</span>
+                `;
+            } else {
+                availabilityStatus.innerHTML = `
+                    <i class="fas fa-times-circle"></i>
+                    <span class="out-of-stock">Out of Stock</span>
+                `;
+            }
+
+            // Set max quantity
+            document.getElementById('quantityInput').max = currentProduct.stock;
+        }
+
+        function changeMainImage(imageSrc, thumbnail) {
+            document.getElementById('mainImage').src = imageSrc;
+            
+            // Update active thumbnail
+            document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+            thumbnail.classList.add('active');
+        }
+
+        function changeQuantity(delta) {
+            const input = document.getElementById('quantityInput');
+            const newValue = parseInt(input.value) + delta;
+            
+            if (newValue >= 1 && newValue <= currentProduct.stock) {
+                input.value = newValue;
+                currentQuantity = newValue;
+            }
+        }
+
+        function addToCartFromDetail() {
+            const quantity = parseInt(document.getElementById('quantityInput').value);
+            
+            for (let i = 0; i < quantity; i++) {
+                addToCart(currentProduct.id);
+            }
+            
+            // Show success message
+            alert(`Added ${quantity} ${currentProduct.name}(s) to cart!`);
+        }
+
+        function buyNow() {
+            addToCartFromDetail();
+            window.location.href = 'checkout.html';
+        }
+
+        function addToWishlist() {
+            alert('Wishlist feature coming soon!');
+        }
+
+        function shareProduct() {
+            if (navigator.share) {
+                navigator.share({
+                    title: currentProduct.name,
+                    text: currentProduct.description,
+                    url: window.location.href
+                });
+            } else {
+                // Fallback - copy to clipboard
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    alert('Product link copied to clipboard!');
+                });
+            }
+        }
+
+        function compareProduct() {
+            alert('Compare feature coming soon!');
+        }
+
+        function loadRelatedProducts() {
+            const relatedProducts = products
+                .filter(p => p.id !== currentProduct.id && p.category === currentProduct.category)
+                .slice(0, 4);
+
+            const relatedGrid = document.getElementById('relatedProducts');
+            relatedGrid.innerHTML = relatedProducts.map(product => `
+                <div class="related-product" onclick="window.location.href='product-detail.html?id=${product.id}'">
+                    <img src="${product.image}" alt="${product.name}">
+                    <div class="related-product-info">
+                        <div class="related-product-name">${product.name}</div>
+                        <div class="related-product-price">$${product.price.toFixed(2)}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update quantity input on change
+        document.getElementById('quantityInput').addEventListener('change', function() {
+            const value = parseInt(this.value);
+            if (value >= 1 && value <= currentProduct.stock) {
+                currentQuantity = value;
+            } else {
+                this.value = currentQuantity;
+            }
+        });
+    </script>
+</body>
+</html>
+
