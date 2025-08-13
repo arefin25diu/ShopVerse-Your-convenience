@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order History - ShopVerse</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-image: url("https://images.unsplash.com/photo-1585939049495-7f87cd649405?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+            background-size: cover;
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo h1 {
+            color: #667eea;
+            font-size: 2rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .nav-links a {
+            color: #667eea;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .orders-container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .orders-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .orders-header h2 {
+            color: #333;
+            font-size: 2rem;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .filter-group label {
+            font-size: 12px;
+            color: #666;
+            font-weight: bold;
+        }
+        
+        .filter-group select,
+        .filter-group input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background: #5a6fd8;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .no-orders {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .orders-list {
+            display: none;
+        }
+        
+        .order-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .order-header {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .order-info {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+        
+        .order-id {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .order-date {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .order-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-confirmed {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .status-processing {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-shipped {
+            background: #cce5ff;
+            color: #004085;
+        }
+        
+        .status-delivered {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .order-total {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 18px;
+        }
+        
+        .order-body {
+            padding: 20px;
+        }
+        
+        .order-items {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .order-item {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        
+        .item-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        
+        .item-details {
+            flex: 1;
+        }
+        
+        .item-name {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .item-quantity {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .item-price {
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .order-summary {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .shipping-info {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        
+        .pagination button {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        
+        .pagination button:hover {
+            background: #f0f0f0;
+        }
+        
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .pagination .current {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .message {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .orders-header {
+                flex-direction: column;
+                gap: 20px;
+                align-items: stretch;
+            }
+            
+            .filters {
+                justify-content: center;
+            }
+            
+            .order-info {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+            
+            .order-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .container {
+                padding: 0 10px;
+            }
+            
+            .orders-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <h1>🛒 ShopVerse</h1>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="products.html">Products</a>
+                <a href="profile.html">Profile</a>
+                <a href="#" onclick="logout()">Logout</a>
+            </div>
+        </div>
+        
+        <div class="orders-container">
+            <div class="orders-header">
+                <h2>Order History</h2>
+                <div class="filters">
+                    <div class="filter-group">
+                        <label>Status</label>
+                        <select id="statusFilter">
+                            <option value="all">All Orders</option>
+                            <option value="pending">Pending</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="processing">Processing</option>
+                            <option value="shipped">Shipped</option>
+                            <option value="delivered">Delivered</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>From Date</label>
+                        <input type="date" id="dateFrom">
+                    </div>
+                    <div class="filter-group">
+                        <label>To Date</label>
+                        <input type="date" id="dateTo">
+                    </div>
+                    <button class="btn" onclick="applyFilters()">Filter</button>
+                </div>
+            </div>
+            
+            <div id="message" class="message" style="display: none;"></div>
+            
+            <div id="loading" class="loading">
+                Loading orders...
+            </div>
+            
+            <div id="noOrders" class="no-orders" style="display: none;">
+                <h3>No orders found</h3>
+                <p>You haven't placed any orders yet.</p>
+                <a href="products.html" class="btn" style="display: inline-block; margin-top: 15px; text-decoration: none;">Start Shopping</a>
+            </div>
+            
+            <div id="ordersList" class="orders-list">
+                <!-- Orders will be populated here -->
+            </div>
+            
+            <div id="pagination" class="pagination" style="display: none;">
+                <!-- Pagination will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        let totalPages = 1;
+        
+        // Load orders on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadOrders();
+        });
+        
+        function loadOrders(page = 1) {
+            currentPage = page;
+            
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('ordersList').style.display = 'none';
+            document.getElementById('noOrders').style.display = 'none';
+            document.getElementById('pagination').style.display = 'none';
+            
+            // Build query parameters
+            const params = new URLSearchParams({
+                page: page,
+                limit: 10
+            });
+            
+            // Add filters
+            const status = document.getElementById('statusFilter').value;
+            if (status && status !== 'all') {
+                params.append('status', status);
+            }
+            
+            const dateFrom = document.getElementById('dateFrom').value;
+            if (dateFrom) {
+                params.append('date_from', dateFrom);
+            }
+            
+            const dateTo = document.getElementById('dateTo').value;
+            if (dateTo) {
+                params.append('date_to', dateTo);
+            }
+            
+            fetch(`order-history.php?${params.toString()}`, {
+                method: 'GET',
+                credentials: 'same-origin'
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('loading').style.display = 'none';
+                
+                if (data.success) {
+                    if (data.data.orders.length === 0) {
+                        document.getElementById('noOrders').style.display = 'block';
+                    } else {
+                        displayOrders(data.data.orders);
+                        displayPagination(data.data.pagination);
+                        document.getElementById('ordersList').style.display = 'block';
+                        document.getElementById('pagination').style.display = 'flex';
+                    }
+                } else {
+                    if (data.message.includes('Authentication required')) {
+                        window.location.href = 'simple-login.html';
+                    } else {
+                        showMessage(data.message, 'error');
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('loading').style.display = 'none';
+                showMessage('Failed to load orders', 'error');
+            });
+        }
+        
+        function displayOrders(orders) {
+            const ordersList = document.getElementById('ordersList');
+            ordersList.innerHTML = '';
+            
+            orders.forEach(order => {
+                const orderCard = createOrderCard(order);
+                ordersList.appendChild(orderCard);
+            });
+        }
+        
+        function createOrderCard(order) {
+            const card = document.createElement('div');
+            card.className = 'order-card';
+            
+            const statusClass = `status-${order.status}`;
+            const orderDate = new Date(order.created_at).toLocaleDateString();
+            
+            card.innerHTML = `
+                <div class="order-header">
+                    <div class="order-info">
+                        <div class="order-id">Order #${order.id}</div>
+                        <div class="order-date">${orderDate}</div>
+                        <div class="order-status ${statusClass}">${order.status}</div>
+                    </div>
+                    <div class="order-total">$${parseFloat(order.total_amount).toFixed(2)}</div>
+                </div>
+                <div class="order-body">
+                    <div class="order-items">
+                        ${order.items.map(item => `
+                            <div class="order-item">
+                                <img src="${item.image || 'https://via.placeholder.com/60'}" alt="${item.name}" class="item-image">
+                                <div class="item-details">
+                                    <div class="item-name">${item.name}</div>
+                                    <div class="item-quantity">Quantity: ${item.quantity}</div>
+                                </div>
+                                <div class="item-price">$${parseFloat(item.subtotal).toFixed(2)}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="order-summary">
+                        <div class="shipping-info">
+                            <strong>Shipping:</strong> ${order.shipping_address}<br>
+                            <strong>Payment:</strong> ${order.payment_method}
+                        </div>
+                        <div class="order-total">Total: $${parseFloat(order.total_amount).toFixed(2)}</div>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+        
+        function displayPagination(pagination) {
+            const paginationDiv = document.getElementById('pagination');
+            paginationDiv.innerHTML = '';
+            
+            totalPages = pagination.total_pages;
+            
+            // Previous button
+            const prevBtn = document.createElement('button');
+            prevBtn.textContent = 'Previous';
+            prevBtn.disabled = pagination.current_page === 1;
+            prevBtn.onclick = () => loadOrders(pagination.current_page - 1);
+            paginationDiv.appendChild(prevBtn);
+            
+            // Page numbers
+            const startPage = Math.max(1, pagination.current_page - 2);
+            const endPage = Math.min(totalPages, pagination.current_page + 2);
+            
+            for (let i = startPage; i <= endPage; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.textContent = i;
+                pageBtn.className = i === pagination.current_page ? 'current' : '';
+                pageBtn.onclick = () => loadOrders(i);
+                paginationDiv.appendChild(pageBtn);
+            }
+            
+            // Next button
+            const nextBtn = document.createElement('button');
+            nextBtn.textContent = 'Next';
+            nextBtn.disabled = pagination.current_page === totalPages;
+            nextBtn.onclick = () => loadOrders(pagination.current_page + 1);
+            paginationDiv.appendChild(nextBtn);
+            
+            // Page info
+            const pageInfo = document.createElement('span');
+            pageInfo.textContent = `Page ${pagination.current_page} of ${totalPages} (${pagination.total_orders} orders)`;
+            pageInfo.style.marginLeft = '20px';
+            pageInfo.style.color = '#666';
+            paginationDiv.appendChild(pageInfo);
+        }
+        
+        function applyFilters() {
+            loadOrders(1);
+        }
+        
+        function showMessage(message, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.className = `message ${type}`;
+            messageDiv.textContent = message;
+            messageDiv.style.display = 'block';
+            
+            // Auto hide after 5 seconds
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        function logout() {
+            fetch('auth.php?action=logout', {
+                method: 'POST',
+                credentials: 'same-origin'
+            })
+            .then(response => response.json())
+            .then(data => {
+                window.location.href = 'simple-login.html';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                window.location.href = 'simple-login.html';
+            });
+        }
+    </script>
+</body>
+</html>
+
